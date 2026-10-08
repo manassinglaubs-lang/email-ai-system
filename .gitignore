@@ -1,0 +1,4 @@
+.env
+venv/
+__pycache__/
+GenAI_Email_Classification_Automated_Response_System.docx
