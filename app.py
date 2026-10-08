@@ -1,10 +1,35 @@
 import html
+import base64
+from pathlib import Path
 
 import streamlit as st
 
 from analyzer import CATEGORIES, analyze_email
 
 st.set_page_config(page_title="Email Triage Assistant", page_icon="📧", layout="wide")
+COMPANY_NAME = "NEXERA"                 # <- your company name
+TAGLINE = "Customer Support Desk"
+BUILT_BY = "MANAS SINGLA"                    # <- shown in the footer
+LOGO_PATH = "assets/logo.svg"             # optional: your own logo file
+
+DEFAULT_LOGO = (
+    '<svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">'
+    '<rect width="48" height="48" rx="12" fill="#3B4CCA"/>'
+    '<rect x="11" y="14" width="26" height="20" rx="3" fill="none" stroke="#fff" stroke-width="2.5"/>'
+    '<path d="M12 17l12 9 12-9" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>'
+    "</svg>"
+)
+
+
+def logo_html():
+    """Use assets/logo.* if it exists, otherwise the built-in mark."""
+    p = Path(LOGO_PATH)
+    if p.exists():
+        ext = p.suffix.lower().lstrip(".")
+        mime = {"svg": "image/svg+xml", "jpg": "image/jpeg"}.get(ext, f"image/{ext}")
+        data = base64.b64encode(p.read_bytes()).decode()
+        return f'<img class="logo" src="data:{mime};base64,{data}">'
+    return DEFAULT_LOGO
 
 SAMPLES = {
     "Write my own": "",
@@ -41,6 +66,11 @@ html, body, .stApp, .stApp button, .stApp textarea, .stApp input { font-family: 
 .letter { font-family: 'Newsreader', Georgia, serif; font-size: 1.1rem; line-height: 1.65; color: #232B36; }
 .muted { color: #6B7686; }
 .empty { text-align: center; padding: 3.5rem 1rem; color: #6B7686; border: 1.5px dashed #C9D1DC; border-radius: 12px; }
+.brand { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.8rem; }
+.logo { width: 48px; height: 48px; border-radius: 12px; object-fit: contain; }
+.company { font-weight: 700; font-size: 1.15rem; color: #1B2430; }
+.tagline { color: #6B7686; font-size: 0.9rem; }
+.footer { text-align: center; color: #8A94A3; font-size: 0.85rem; margin-top: 2.5rem; }
 </style>
 """
 
@@ -101,6 +131,12 @@ def show_result(r):
 
 # ---------- Page ----------
 st.markdown(CSS, unsafe_allow_html=True)
+st.markdown(
+    f'<div class="brand">{logo_html()}<div>'
+    f'<div class="company">{html.escape(COMPANY_NAME)}</div>'
+    f'<div class="tagline">{html.escape(TAGLINE)}</div></div></div>',
+    unsafe_allow_html=True,
+)
 st.markdown('<h1 class="title">Email Triage Assistant</h1>', unsafe_allow_html=True)
 st.markdown(
     '<p class="sub">Paste a customer email to get its category, urgency, tone, key details and a drafted reply.</p>',
@@ -140,3 +176,7 @@ with right:
             '<div class="empty">Your results will appear here.<br>Pick a sample or paste an email, then click Analyze email.</div>',
             unsafe_allow_html=True,
         )
+st.markdown(
+    f'<div class="footer">Built by {html.escape(BUILT_BY)} using Python, Groq and Streamlit</div>',
+    unsafe_allow_html=True,
+)
