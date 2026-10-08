@@ -10,7 +10,7 @@ st.set_page_config(page_title="Email Triage Assistant", page_icon="📧", layout
 COMPANY_NAME = "NEXERA"                 # <- your company name
 TAGLINE = "Customer Support Desk"
 BUILT_BY = "MANAS SINGLA"                    # <- shown in the footer
-LOGO_PATH = "assets/logo.svg"             # optional: your own logo file
+LOGO_PATH = "assets/logo.jpeg"             # optional: your own logo file
 
 DEFAULT_LOGO = (
     '<svg class="logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">'
